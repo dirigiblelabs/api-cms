@@ -104,7 +104,7 @@ function Folder() {
 	};
 
 	this.createFolder = function(properties) {
-		var mapInstance = java.instantiate(this.uuid, 'java.util.HashMap', [], true);
+		var mapInstance = java.instantiate('java.util.HashMap', []);
 		for (var property in properties) {
 		    if (properties.hasOwnProperty(property)) {
 		    	java.invoke(mapInstance.uuid, 'put', [property, properties[property]], true);
@@ -117,7 +117,7 @@ function Folder() {
 	};
 
 	this.createDocument = function(properties, contentStream, versioningState) {
-		var mapInstance = java.instantiate(this.uuid, 'java.util.HashMap', [], true);
+		var mapInstance = java.instantiate('java.util.HashMap', []);
 		for (var property in properties) {
 		    if (properties.hasOwnProperty(property)) {
 		    	java.invoke(mapInstance.uuid, 'put', [property, properties[property]], true);
