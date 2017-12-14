@@ -9,6 +9,7 @@
  */
 
 var java = require('core/v3/java');
+var streams = require('io/v3/streams');
 
 exports.getSession = function() {
 	var sessionInstance = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'getSession', [], true);
@@ -164,13 +165,20 @@ function Folder() {
 	};
 
 	this.rename = function(newName) {
-		return java.invoke(this.uuid, 'rename', [newName, true]);
+		return java.invoke(this.uuid, 'rename', [newName]);
 	};
 	
 	this.deleteTree = function() {
 		var unifiedObjectDelete = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'getUnifiedObjectDelete', [], true);
 		return java.invoke(this.uuid, 'deleteTree', [true, unifiedObjectDelete.uuid, true]);
 	};
+
+	this.getType = function() {
+		var typeInstance = java.invoke(this.uuid, 'getType', [], true);
+		var type = new TypeDefinition()
+		type.uuid = typeInstance.uuid;
+		return type;
+	}
 }
 
 /**
@@ -187,7 +195,10 @@ function CmisObject() {
 	};
 
 	this.getType = function() {
-		return java.invoke(this.uuid, 'getType', []);
+		var typeInstance = java.invoke(this.uuid, 'getType', [], true);
+		var type = new TypeDefinition();
+		type.uuid = typeInstance.uuid;
+		return type;
 	};
 
 	this.delete = function() {
@@ -197,6 +208,7 @@ function CmisObject() {
 	this.rename = function(newName) {
 		return java.invoke(this.uuid, 'rename', [newName]);
 	};
+
 }
 
 /**
@@ -205,6 +217,9 @@ function CmisObject() {
 function ObjectFactory() {
 
 	this.createContentStream = function(filename, length, mimetype, inputStream) {
+		console.warn('File name: ' + filename);
+		console.warn('Length: ' + length);
+		console.warn('Mime Type: ' + mimetype);
 		var contentStreamInstance = java.invoke(this.uuid, 'createContentStream', [filename, length, mimetype, inputStream.uuid], true);
 		var contentStream = new ContentStream();
 		contentStream.uuid = contentStreamInstance.uuid;
@@ -222,6 +237,10 @@ function ContentStream() {
 		var inputStream = new streams.InputStream();
 		inputStream.uuid = streamInstance.uuid;
 		return inputStream;
+	};
+
+	this.getMimeType = function() {
+		return java.invoke(this.uuid, 'getMimeType', []);
 	};
 }
 
@@ -252,12 +271,21 @@ function Document() {
 		return null;
 	};
 
+	this.getSize = function(newName) {
+		return java.invoke(this.uuid, 'getSize', []);
+	};
+
 	this.rename = function(newName) {
-		return java.invoke(this.uuid, 'rename', [newName, true]);
+		return java.invoke(this.uuid, 'rename', [newName]);
 	};
 }
 
+function TypeDefinition() {
 
+	this.getId = function() {
+		return java.invoke(this.uuid, 'getId', []);
+	};
+}
 // CONSTANTS
 
 // ---- Base ----
