@@ -49,13 +49,13 @@ function Session() {
 		var objectInstanceType = java.invoke(objectInstance.uuid, 'getType', [], true);
 		var objectInstanceTypeId = java.invoke(objectInstanceType.uuid, 'getId', []);
 		if (objectInstanceTypeId === exports.OBJECT_TYPE_DOCUMENT) {
-			var object = new Document();
-			object.uuid = objectInstance.uuid;
-			return object;
+			var document = new Document();
+			document.uuid = objectInstance.uuid;
+			return document;
 		} else if (objectInstanceTypeId === exports.OBJECT_TYPE_FOLDER) {
-			var object = new Folder();
-			object.uuid = objectInstance.uuid;
-			return object;
+			var folder = new Folder();
+			folder.uuid = objectInstance.uuid;
+			return folder;
 		}
 		throw new Error("Unsupported CMIS object type: " + objectInstanceTypeId);
 	};
@@ -65,13 +65,13 @@ function Session() {
 		var objectInstanceType = java.invoke(objectInstance.uuid, 'getType', [], true);
 		var objectInstanceTypeId = java.invoke(objectInstanceType.uuid, 'getId', []);
 		if (objectInstanceTypeId === exports.OBJECT_TYPE_DOCUMENT) {
-			var object = new Document();
-			object.uuid = objectInstance.uuid;
-			return object;
+			var document = new Document();
+			document.uuid = objectInstance.uuid;
+			return document;
 		} else if (objectInstanceTypeId === exports.OBJECT_TYPE_FOLDER) {
-			var object = new Folder();
-			object.uuid = objectInstance.uuid;
-			return object;
+			var folder = new Folder();
+			folder.uuid = objectInstance.uuid;
+			return folder;
 		}
 		throw new Error("Unsupported CMIS object type: " + objectInstanceTypeId);
 	};
@@ -137,7 +137,7 @@ function Folder() {
 		var childrenInstance = java.invoke(this.uuid, 'getChildren', [], true);
 		var childrenInstanceIterator = java.invoke(childrenInstance.uuid, 'iterator', [], true);
 		while (java.invoke(childrenInstanceIterator.uuid, 'hasNext', [])) {
-			var cmisObjectInstance = java.invoke(childrenInstanceIterator.uuid, 'next', [], true)
+			var cmisObjectInstance = java.invoke(childrenInstanceIterator.uuid, 'next', [], true);
 			var cmisObject = new CmisObject();
 			cmisObject.uuid = cmisObjectInstance.uuid;
 			children.push(cmisObject);
@@ -175,10 +175,10 @@ function Folder() {
 
 	this.getType = function() {
 		var typeInstance = java.invoke(this.uuid, 'getType', [], true);
-		var type = new TypeDefinition()
+		var type = new TypeDefinition();
 		type.uuid = typeInstance.uuid;
 		return type;
-	}
+	};
 }
 
 /**
@@ -257,6 +257,13 @@ function Document() {
 		return java.invoke(this.uuid, 'getName', []);
 	};
 
+	this.getType = function() {
+		var typeInstance = java.invoke(this.uuid, 'getType', [], true);
+		var type = new TypeDefinition();
+		type.uuid = typeInstance.uuid;
+		return type;
+	};
+
 	this.delete = function() {
 		return java.invoke(this.uuid, 'delete', [true]);
 	};
@@ -271,7 +278,7 @@ function Document() {
 		return null;
 	};
 
-	this.getSize = function(newName) {
+	this.getSize = function() {
 		return java.invoke(this.uuid, 'getSize', []);
 	};
 
