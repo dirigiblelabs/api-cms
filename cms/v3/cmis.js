@@ -11,6 +11,9 @@
 var java = require('core/v3/java');
 var streams = require('io/v3/streams');
 
+const CMIS_ROLE_READ = 'READ';
+const CMIS_ROLE_WRITE = 'WRITE';
+
 exports.getSession = function() {
 	var sessionInstance = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'getSession', [], true);
 	var session = new Session();
@@ -105,6 +108,10 @@ function Folder() {
 	};
 
 	this.createFolder = function(properties) {
+		var allowed = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'isAllowed', [this.getPath(), CMIS_ROLE_WRITE], true);
+		if (!allowed) {
+			throw new Error("Write access not allowed on: " + this.getPath());
+		}
 		var mapInstance = java.instantiate('java.util.HashMap', []);
 		for (var property in properties) {
 		    if (properties.hasOwnProperty(property)) {
@@ -118,6 +125,10 @@ function Folder() {
 	};
 
 	this.createDocument = function(properties, contentStream, versioningState) {
+		var allowed = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'isAllowed', [this.getPath(), CMIS_ROLE_WRITE], true);
+		if (!allowed) {
+			throw new Error("Write access not allowed on: " + this.getPath());
+		}
 		var mapInstance = java.instantiate('java.util.HashMap', []);
 		for (var property in properties) {
 		    if (properties.hasOwnProperty(property)) {
@@ -133,6 +144,10 @@ function Folder() {
 	};
 
 	this.getChildren = function() {
+		var allowed = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'isAllowed', [this.getPath(), CMIS_ROLE_READ], true);
+		if (!allowed) {
+			throw new Error("Read access not allowed on: " + this.getPath());
+		}
 		var children = [];
 		var childrenInstance = java.invoke(this.uuid, 'getChildren', [], true);
 		var childrenInstanceIterator = java.invoke(childrenInstance.uuid, 'iterator', [], true);
@@ -161,14 +176,26 @@ function Folder() {
 	};
 
 	this.delete = function() {
+		var allowed = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'isAllowed', [this.getPath(), CMIS_ROLE_WRITE], true);
+		if (!allowed) {
+			throw new Error("Write access not allowed on: " + this.getPath());
+		}
 		return java.invoke(this.uuid, 'delete', [true]);
 	};
 
 	this.rename = function(newName) {
+		var allowed = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'isAllowed', [this.getPath(), CMIS_ROLE_WRITE], true);
+		if (!allowed) {
+			throw new Error("Write access not allowed on: " + this.getPath());
+		}
 		return java.invoke(this.uuid, 'rename', [newName]);
 	};
 	
 	this.deleteTree = function() {
+		var allowed = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'isAllowed', [this.getPath(), CMIS_ROLE_WRITE], true);
+		if (!allowed) {
+			throw new Error("Write access not allowed on: " + this.getPath());
+		}
 		var unifiedObjectDelete = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'getUnifiedObjectDelete', [], true);
 		return java.invoke(this.uuid, 'deleteTree', [true, unifiedObjectDelete.uuid, true]);
 	};
