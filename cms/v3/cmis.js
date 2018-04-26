@@ -11,8 +11,8 @@
 var java = require('core/v3/java');
 var streams = require('io/v3/streams');
 
-const CMIS_METHOD_READ = 'READ';
-const CMIS_METHOD_WRITE = 'WRITE';
+var CMIS_METHOD_READ = 'READ';
+var CMIS_METHOD_WRITE = 'WRITE';
 
 exports.getSession = function() {
 	var sessionInstance = java.call('org.eclipse.dirigible.api.v3.cms.CmisFacade', 'getSession', [], true);
