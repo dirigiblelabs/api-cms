@@ -306,7 +306,15 @@ function Document() {
 		return type;
 	};
 
+	this.getPath = function() {
+    		return this.native.getPath();
+    	};
+
 	this.delete = function() {
+	    var allowed = org.eclipse.dirigible.api.v3.cms.CmisFacade.isAllowed(this.getPath(), CMIS_METHOD_WRITE);
+       	    if (!allowed) {
+            	throw new Error("Write access not allowed on: " + this.getPath());
+            }
 		return this.native.delete(true);
 	};
 
@@ -325,6 +333,10 @@ function Document() {
 	};
 
 	this.rename = function(newName) {
+	    var allowed = org.eclipse.dirigible.api.v3.cms.CmisFacade.isAllowed(this.getPath(), CMIS_METHOD_WRITE);
+    	    if (!allowed) {
+    		throw new Error("Write access not allowed on: " + this.getPath());
+    	    }
 		return this.native.rename(newName);
 	};
 }
