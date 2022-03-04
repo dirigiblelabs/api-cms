@@ -85,10 +85,12 @@ function Session() {
 		if (objectInstanceTypeId === exports.OBJECT_TYPE_DOCUMENT) {
 			var document = new Document();
 			document.native = objectInstance;
+			document.path = path;
 			return document;
 		} else if (objectInstanceTypeId === exports.OBJECT_TYPE_FOLDER) {
 			var folder = new Folder();
 			folder.native = objectInstance;
+			folder.path = path;
 			return folder;
 		}
 		throw new Error("Unsupported CMIS object type: " + objectInstanceTypeId);
@@ -176,7 +178,7 @@ function Folder() {
 	};
 
 	this.getPath = function() {
-		return this.native.getPath();
+		return this.path;
 	};
 
 	this.isRootFolder = function() {
@@ -307,8 +309,8 @@ function Document() {
 	};
 
 	this.getPath = function() {
-    		return this.native.getPath();
-    	};
+    	return this.path;
+    };
 
 	this.delete = function() {
 	    var allowed = org.eclipse.dirigible.api.v3.cms.CmisFacade.isAllowed(this.getPath(), CMIS_METHOD_WRITE);
