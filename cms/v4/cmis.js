@@ -249,7 +249,7 @@ function CmisObject() {
 	        return this.native.getPaths()[0];
 	    }
 
-		console.warn("Path for CmisObject not found");
+	    throw new Error(`Path not found for CmisObject with id ${this.getId()}`);
 	}
 
 	this.getType = function() {
